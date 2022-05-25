@@ -20,5 +20,5 @@ let b = ((0.6 * 10) + (0.7 * 10)) / 10;
 console.log(b);
 
 // 5. Получить число из строки ‘100$’
-let number = parseInt('$100');
+let number = parseInt(`100$`);
 console.log(number);
