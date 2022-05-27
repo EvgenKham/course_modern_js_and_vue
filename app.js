@@ -1,57 +1,58 @@
-// 1. Записать в виде switch case следующее условие:
-// if (a === ‘block’) {
-//      console.log(‘block’)
-// } else if (a === ‘none’) {
-// 	    console.log(‘none’)
-// } else if (a === ‘inline’) {
-//      console.log(‘inline’)
-// } else {
-// 	    console.log(‘other’)
-// }
-// Записать условие, используя конструктор switch. В консоли должно отразиться только одно значение.
+// 1. На основе строки “i am in the easycode” сделать новую строку где первые буквы каждого слова 
+// будут в верхнем регистре. Использовать for или while.
 
-let a = "";
-
-switch(a){
-    case "block": 
-        console.log("block");
-        break;
-    case "none": 
-        console.log("none");
-        break;
-    case "inline":
-        console.log("inline");
-        break;
-    default:
-        console.log("other");
+let str = "i am in the easycode";
+let result = "";
+let n = 0
+while(n < str.length) {
+    if(n === 0 || str[n - 1] === " ")
+        result += str[n].toUpperCase();
+    else
+        result += str[n];
+    n++;
 }
+console.log(result);
 
-// 2. Записать данное условие в виде тернарного оператора
+// 2. Дана строка “tseb eht ma i”. Используя циклы, сделать строку-перевертыш (то есть последняя буква становится первой, предпоследняя - второй итд).
 
-// let b = 'hidden';
-// if (b === 'hidden') {
-//   b = 'visible';
-// } else {
-//   b = 'hidden';
-// }
+let startStr = "tseb eht ma i";
+let finishStr = "";
 
-let b = "";
-b === "hidden" ? b = "visible" : b = "hidden";
+for(let i = startStr.length - 1; i >= 0 ; i--) {
+    finishStr += startStr[i];
+}
+console.log(finishStr);
 
-// 2. Записать данное условие в виде тернарного оператора
+// 3. Факториал числа - произведение всех натуральных чисел от 1 до n включительно: 3! = 3*2*1, 5! = 5*4*3*2*1. С помощью циклов вычислить факториал числа 10. Использовать for.
 
-// let c = 0;
-// if (c === 0) {
-//     c = 1;
-// } else if (c < 0) {
-//     c = 'less then zero';
-// } else {
-//     c *= 10;
-// }
+let factorial = 1;
 
-let c = -2;
-c === 0 ? c = 1 
-    : c < 0 ? c = "less then zero"
-        : c *= 10;
+for(let i = 0; i <= 10 ; i++) {
+    if(i === 0)
+        continue;
+    factorial *= i;
+}
+console.log(factorial);
 
-console.log(c);
+// 4. На основе строки “JavaScript is a pretty good language” сделать новую строку,
+// где каждое слово начинается с большой буквы, а пробелы удалены. Использовать for.
+
+let strJS = "JavaScript is a pretty good language";
+let strFinish = "";
+for(let i = 0; i < strJS.length; i++){
+    if(i === 0 || strJS[i - 1] === " "){
+        strFinish += strJS[i].toUpperCase();
+    } else if(strJS[i] !== " ") {
+        strFinish += strJS[i];
+    }
+}
+console.log(strFinish);
+
+// 5. Найти все нечетные числа в массиве от 1 до 15 включительно и вывести их в консоль. Массив [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] Использовать for of.
+
+// 6. Дан объект:
+// let list = {
+// name: ‘denis’,
+// work: ‘easycode’,
+// age: 29
+// Перебрать объект и если значение в свойстве это строка то переписать ее всю в верхнем регистре. Использовать for in.
