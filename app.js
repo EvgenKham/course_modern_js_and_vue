@@ -67,7 +67,7 @@ let list = {
     work: 'easycode',
     age: 29
     }
-console.log(list);
+// console.log(list);
 for (let key in list) {
     if(typeof(list[key]) === typeof("")){
         list[key] = list[key].toUpperCase();
