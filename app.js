@@ -1,76 +1,161 @@
-// 1. На основе строки “i am in the easycode” сделать новую строку где первые буквы каждого слова 
-// будут в верхнем регистре. Использовать for или while.
+// 1. Создать функцию multiply, которая будет принимать любое количество чисел и возвращать их произведение: 
+//    multiply(1,2,3) = 6 (1*2*3)
+//    Если нет ни одного аргумента, вернуть ноль: multiply() // 0
 
-let str = "i am in the easycode";
-let result = "";
-let n = 0
-while(n < str.length) {
-    if(n === 0 || str[n - 1] === " ")
-        result += str[n].toUpperCase();
-    else
-        result += str[n];
-    n++;
+function multiply() {
+    if (arguments[0] === undefined){
+        return 0;
+    }
+
+    let result = 1;
+    for(let value of arguments) {
+        result *= value;
+    }
+    return result;
 }
-console.log(result);
+console.log(multiply("2", 3, 5));
+console.log(multiply());
 
-// 2. Дана строка “tseb eht ma i”. Используя циклы, сделать строку-перевертыш (то есть последняя буква становится первой, предпоследняя - второй итд).
+// 2. Создать функцию, которая принимает строку и возвращает строку-перевертыш: reverseString(‘test’) // “tset”.
 
-let startStr = "tseb eht ma i";
-let finishStr = "";
-
-for(let i = startStr.length - 1; i >= 0 ; i--) {
-    finishStr += startStr[i];
+function reverseString(str) {
+    let strReverse = '';
+    newStr = String(str);
+    for(let i = newStr.length - 1; i >= 0; i--) {
+        
+        strReverse += newStr[i];
+    }
+    return strReverse;
 }
-console.log(finishStr);
 
-// 3. Факториал числа - произведение всех натуральных чисел от 1 до n включительно: 3! = 3*2*1, 5! = 5*4*3*2*1. С помощью циклов вычислить факториал числа 10. Использовать for.
+console.log(reverseString(null));
 
-let factorial;
+// 3. Создать функцию, которая в качестве аргумента принимает строку из букв и возвращает строку, где каждый символ разделен пробелом и заменен на юникод-значение символа: 
+// getCodeStringFromText(‘hello’) // “104 101 108 108 111” 
+// подсказка: для получения кода используйте специальный метод
 
-for(let i = 1; i <= 10 ; i++) {
-    factorial *= i;
+function getCodeStringFromText(str) {
+   
+    let strUnicode = "";
+    originStr = String(str);
+    console.log(originStr);
+    for(let i = 0; i < originStr.length; i++) {
+        strUnicode += String(originStr.charCodeAt([i]));
+        strUnicode += " ";
+    }
+    return strUnicode.trim();
 }
-console.log(factorial);
 
-// 4. На основе строки “JavaScript is a pretty good language” сделать новую строку,
-// где каждое слово начинается с большой буквы, а пробелы удалены. Использовать for.
+console.log(getCodeStringFromText(null));
 
-let strJS = "JavaScript is a pretty good language";
-let strFinish = "";
-for(let i = 0; i < strJS.length; i++){
-    if(i === 0 || strJS[i - 1] === " "){
-        strFinish += strJS[i].toUpperCase();
-    } else if(strJS[i] !== " ") {
-        strFinish += strJS[i];
+// 4. Создать функцию угадай число. Она принимает число от 1-10 (обязательно проверить что число не больше 10 и не меньше 0). Генерирует рандомное число от 1-10 и сравнивает с заданным числом если они совпали то возвращает “Вы выиграли” если нет то “Вы не угадали ваше число 8 а выпало число 5”. Числа в строке указаны как пример вы подставляете реальные числа.
+
+function guessNumber (num) {
+    num = parseInt(num);
+
+    // console.log(typeof(num));
+    if(typeof(num) !== 'number'){
+        return new Error("Please provide a valid number");
+    } else if(num <= 10 && num > 0) {
+
+        let randomNumber = Math.round(Math.random() * 10);
+        if(randomNumber === num) {
+            return 'You win';
+        } else {
+            return `You are lose, your number is ${num}, the random number is ${randomNumber}`;
+        }
+
+    } else {
+        return new Error("Please provide number in range 1-10");
     }
 }
-console.log(strFinish);
 
-// 5. Найти все нечетные числа в массиве от 1 до 15 включительно и вывести их в консоль. Массив [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] Использовать for of.
+console.log(guessNumber(null));
 
-let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
-for (let value of numbers) {
-    if(value % 2 !== 0 ) {
-        console.log(value);
+// 5. Создать функцию, которая принимает число n и возвращает массив, заполненный числами от 1 до n: getArray(10); 
+// [1,2,3,4,5,6,7,8,9,10]
+// Данное задание выполните после того как познакомитесь с методами массивов.
+
+function getArray(num) {
+    let newArray = [];
+    for(let i = 0; i < num; i++) {
+        newArray.push(i);
     }
+    return newArray;
 }
 
-// 6. Дан объект:
-// let list = {
-// name: ‘denis’,
-// work: ‘easycode’,
-// age: 29 }
-// Перебрать объект и если значение в свойстве это строка то переписать ее всю в верхнем регистре. Использовать for in.
+console.log(getArray(10));
 
-let list = {
-    name: 'denis',
-    work: 'easycode',
-    age: 29
-    }
-// console.log(list);
-for (let key in list) {
-    if(typeof(list[key]) === typeof("")){
-        list[key] = list[key].toUpperCase();
-    }
+// 6. Создать функцию, которая принимает массив, а возвращает новый массив с дублированными элементами входного массива. Данное задание выполните после того как познакомитесь с методами массивов:
+// doubleArray([1,2,3]) // [1,2,3,1,2,3]
+
+function doubleArray(arr) {
+    let arrNew = arr.concat(arr);
+    return arrNew;
 }
-console.log(list);
+
+console.log(doubleArray([1, 4, 6, 7]));
+
+// 7. Создать функцию, которая принимает произвольное (любое) число массивов и удаляет из каждого массива первый элемент, а возвращает массив из оставшихся значений. Данное задание выполните после того как познакомитесь с методами массивов: 
+// changeCollection([1,2,3], [‘a’, ’b’, ‘c’]) → [ [2,3], [‘b’, ‘c’] ], changeCollection([1,2,3]) → [ [2,3] ] и т.д.
+
+function changeCollection() {
+    let modifyArrays = [];
+    
+    for (let i = 0; i < arguments.length; i++){
+        if(Array.isArray(arguments[i])){
+            arguments[i].shift(0);
+            modifyArrays.push(arguments[i]);
+        }
+    }
+    return modifyArrays;
+}
+
+console.log(changeCollection([1, 2, 3, 4], ["a", "b", "c", "d"]));
+
+// 8. Создать функцию которая принимает массив пользователей, поле на которое хочу проверить и значение на которое хочу проверять. Проверять что все аргументы переданы. Возвращать новый массив с пользователями соответсвующие указанным параметрам.
+// Данное задание выполните после того как познакомитесь с методами массивов
+
+const users = [
+    {
+      "_id": "5e36b779dc76fe3db02adc32",
+      "balance": "$1,955.65",
+      "picture": "http://placehold.it/32x32",
+      "age": 33,
+      "name": "Berg Zimmerman",
+      "gender": "male"
+    },
+    {
+      "_id": "5e36b779d117774176f90e0b",
+      "balance": "$3,776.14",
+      "picture": "http://placehold.it/32x32",
+      "age": 37,
+      "name": "Deann Winters",
+      "gender": "female"
+    },
+    {
+      "_id": "5e36b779daf6e455ec54cf45",
+      "balance": "$3,424.84",
+      "picture": "http://placehold.it/32x32",
+      "age": 36,
+      "name": "Kari Waters",
+      "gender": "female"
+    }
+  ]
+  
+  function filterUsers(arr, key, value) {
+    correctUsers = [];
+    
+    if (!Array.isArray(arr)) return new Error('The first argument should be an array');
+    if (typeof key !== "string" || key === '') return new Error('The key should be a valid string');
+    if (value === undefined || value === null) return new Error('The value should be a valid value.');
+
+    for(let user of arr){
+        if(user[key] === value){
+            correctUsers.push(user);
+        }
+    }
+    return correctUsers;
+  }
+  
+  console.log(filterUsers(users, "age", 36))
