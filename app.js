@@ -94,12 +94,13 @@ console.log(numerator.value);
 
 const product = {
     price: 17,
-    quantityOfProduct : 5,
+    quantity : 5,
     getPriceQuantities: function () {
-        return this.price * this.quantityOfProduct;
+        return this.price * this.quantity;
         
     }
 };
+// console.log(product.getPriceQuantities());
 
 // 6. Создать объект из предыдущей задачи. 
 // Создать второй объект, который описывает количество деталей и цену за одну деталь. 
@@ -110,9 +111,45 @@ product.getPriceQuantities();
 
 const detail = {
     price: 6,
-    quantityOfDetail: 50,
+    quantity: 45,
 };
 
-let getPrice = product.getPriceQuantities.call(detail);
+console.log(product.getPriceQuantities.call(detail));
 
-console.log(getPrice);
+// console.log(product.getPriceQuantities.call(detail));
+
+// 7. Даны объект и функция:
+// let sizes = {width: 5, height: 10},
+// getSquare = function () {return this.width * this.height};
+// Не изменяя функцию или объект, получить результат функции
+// getSquare для объекта sizes
+
+
+let sizes = {
+    width: 5, 
+    height: 10
+};
+getSquare = function () {return this.width * this.height};
+
+console.log(getSquare.call(sizes));
+
+// console.log(getSquare.call(sizes, sizes.width, sizes.width));
+
+// 8. let element = {
+//     height: 25,
+//     getHeight: function () {return this.height;}
+// };
+
+// let getElementHeight = element.getHeight;
+// getElementHeight(); // undefined
+
+// Измените функцию getElementHeight таким образом, чтобы можно
+// было вызвать getElementHeight() и получить 25.
+
+let element = {
+        height: 25,
+        getHeight: function () {return this.height;}
+};
+
+let getElementHeight = element.getHeight.bind(element);
+console.log(getElementHeight());
