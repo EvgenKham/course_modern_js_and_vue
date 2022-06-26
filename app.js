@@ -1,84 +1,84 @@
+// document.body.style.background = "";
+// const div = document.querySelector('div');
+// const titles = document.querySelectorAll('h1');
+// const h1 = document.getElementsByTagName('h1');
+// console.log(div);
+// console.dir(h1);
+// console.log(titles);
+// console.log(Array.from(titles));
+// console.log(Array.prototype.slice.call(titles));
+// console.log([...titles]);
 
-// 1. Используя rest оператор и деструктуризацию, создать функцию, которая принимает любое количество аргументов и возвращает объект, содержащий первый аргумент и массив из остатка:
 
-// func(‘a’, ‘b’, ‘c’, ‘d’) → 
-// {
-//   first: ‘a’,
-//   other: [‘b’, ‘c’, ‘d’]
-// }
+// Зная структуру html, с помощью изученных
+// методов получить (в консоль):
+// 1. head
+// 2. body
+// 3. все дочерние элементы body и вывести их в
+// консоль.
+// 4. первый div и все его дочерние узлы
+// а) вывести все дочерние узлы в консоль
+// б) вывести в консоль все дочерние узлы,
+// кроме первого и последнего
+// Для навигации по DOM использовать методы,
+// которые возвращают только элементы
 
-function exp( first, ...other ) {
-    return {first, other}
+// 1
+const headElement = document.head;
+console.dir(headElement);
+
+// 2
+const bodyElement = document.body;
+console.dir(bodyElement);
+
+// 3
+const childrenBody = document.body.children;
+console.dir(childrenBody);
+
+// 4
+const firstDiv = document.querySelector("div");
+const allElementFirstOfDiv = firstDiv.children;
+
+console.dir([...allElementFirstOfDiv]);
+console.dir([...allElementFirstOfDiv].slice(1,3));
+
+
+// 1. Создать функцию, которая принимает два элемента. 
+// Функция проверяет, является ли первый элемент родителем для второго:
+
+// isParent(parent, child);
+// isParent(document.body.children[0], document.querySelector('mark'));
+// true так как первый див является родительским элементом для mark
+
+// isParent(document.querySelector('ul'), document.querySelector('mark'));
+// false так ul НЕ является родительским элементом для mark
+// Функция принимает только DOM объекты.
+ 
+function isParent(parent, child) {
+    let curentParent = child.parentElement;
+    let isParent = false;
+
+    while(curentParent) {
+        isParent = curentParent === parent;
+
+        if(isParent) {
+            curentParent = null;
+        } else {
+            curentParent = curentParent.parentElement;
+        }
+    }
+
+    return isParent;
 }
 
-console.log(exp('a', 'b', 'c', 'd'));
+console.log(isParent(document.body.children[0], document.querySelector('mark')));
+console.log(isParent(document.querySelector('ul'), document.querySelector('mark')));
 
-// 2. Организовать функцию getInfo, которая принимает объект вида
-// { name: ...,  info: { employees: [...], partners: [ … ]  } }
-// и выводит в консоль имя (если имени нет, показывать ‘Unknown’) и первые две компании из массива partners:
 
-// getInfo(organisation); → 
-// Name: Google 
-// Partners: Microsoft Facebook
+// 2. Получить список всех ссылок, которые не находятся внутри списка ul
 
-const organisation = {  
-  name: 'Google',   
-  info: { employees: ['Vlad', 'Olga'], partners: ['Microsoft', 'Facebook', 'Xing']   } 
-};
 
-function getInfo( {name = "Unknown", info:{partners:[first, second]}} ) {
-    console.log(`Name: ${name} \n\Partners: ${first} ${second}`);
-}
 
-getInfo(organisation);
+console.log();
 
-// 3. Дан объект:
-
-let user = {
-    "guid": "dd969d30-841d-436e-9550-3b0c649e4d34",
-    "isActive": false,
-    "balance": "$2,474.46",
-    "age": 30,
-    "eyeColor": "blue",
-    "name": "Tameka Maxwell",
-    "gender": "female",
-    "company": "ENOMEN",
-    "email": "tamekamaxwell@enomen.com",
-    "phone": "+1 (902) 557-3898",
-    "tags": [
-      "aliquip",
-      "anim",
-      "exercitation",
-      "non",
-    ],
-    "friends": [
-      {
-        "id": 0,
-        "name": "Barber Hicks"
-      },
-      {
-        "id": 1,
-        "name": "Santana Cruz"
-      },
-      {
-        "id": 2,
-        "name": "Leola Cabrera"
-      }
-    ],
-  };
-
-// Используя деструктуризацию получить значения из следующих полей
-// 1. name,  balance, email
-// 2. из массива tags получить первый и последний элемент
-// 3. из массива friends получить значение поле name из первого элемента массива
-// Если какое то из полей не имеет значения то подставить значение по умолчанию.
-
-const { name: nameUser, balance, email } = user;
-const { tags:[first, , , fourth] } = user;
-const { friends:[ { name: nameFirstFriend }  ] } = user;
-
-// 4. С помощью оператора rest, из объекта user (из предыдущей задачи) 
-// скопировать в новый массив значение следующих полей tags и friends.
-
-const { tags: [...otherTags] } = user;
-const { friends: [ ...otherFriends ] } = user;
+// 3. Найти элемент, который находится перед и после списка ul
