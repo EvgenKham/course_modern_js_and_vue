@@ -77,8 +77,15 @@ console.log(isParent(document.querySelector('ul'), document.querySelector('mark'
 
 // 2. Получить список всех ссылок, которые не находятся внутри списка ul
 
+const allLinks = Array.from(document.links);
+const linksNotUl = allLinks.filter( a => !a.closest("ul"));
 
-
-console.log();
+console.log(linksNotUl);
 
 // 3. Найти элемент, который находится перед и после списка ul
+
+const ul = document.querySelector("ul");
+const beforUl = ul.previousElementSibling;
+const afterUl = ul.nextElementSibling;
+
+console.log(beforUl, afterUl);
