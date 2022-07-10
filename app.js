@@ -1,58 +1,30 @@
 const div = document.querySelector("div");
-const links = document.links;
 const mark = div.querySelector("mark");
 const parentMark = mark.closest("article");
 
-// 1. Найти параграф и получить его текстовое содержимое (только текст!)
+// 1. Найти в коде список ul и добавить класс “list”
 
-const paragraph = document.querySelector("p");
-console.log(paragraph.textContent);
+const list = document.querySelector("ul");
+list.classList.add("list");
 
-// 2. Создать функцию, которая принимает в качестве аргумента узел DOM и возвращает информацию (в виде объекта) о типе узла, об имени узла и о количестве дочерних узлов (если детей нет - 0).
 
-const ul = document.querySelector("ul");
+// 2. Найти в коде ссылку, находящуюся после списка ul, и добавить id=link
 
-function infoNode(node) {
-     
-    let type = ""; 
-    switch(node.nodeType) {
-        case 1: type = "element node";
-            break;
-        case 3: type = "text node";
-            break;
-        case 8: type = "comment node";
-            break;
-    }
+const link = document.querySelector("ul ~ a");
+link.setAttribute("id", "link");
 
-    const name = node.nodeName;
 
-    let children = node.children.length;
+// 3. На li через один (начиная с самого первого) установить класс “item”
 
-    return {type, name, children};
+const allLi = document.querySelectorAll("li");
+
+for(let x = 0; x < allLi.length; x++) {
+    if(x % 2)
+        allLi[x].classList.add("item");
 };
 
-console.log(infoNode(ul));
 
-// 3. Получить массив, который состоит из текстового содержимого ссылок внутри списка: 
-// getTextFromUl(ul) ---> ["Link1", "Link2", "Link3"]
+// 4. На все ссылки в примере установить класс “custom-link”
 
-function getTextFromUl(node) {
-    let text = [];
-    let nodeText = node.textContent.trim().split("\n");
-    nodeText.forEach( element => { text.push(element.trim());
-    });
-    return text;
-};
-
-console.log(getTextFromUl(ul));
-
-// 4. В параграфе заменить все дочерние текстовые узлы на “-text-” (вложенные теги должны остаться).
-// Конечный результат: -text-<a href="#">reprehendunt</a>-text-<mark>nemore</mark>-text-
-
-let childrenParagraph = paragraph.childNodes;
-childrenParagraph.forEach(element => { 
-    if(element.nodeType === 3) 
-        element.textContent = "-text-";
-});
-
-console.log(paragraph);
+const [...links] = document.links;
+links.forEach( element => { element.classList.add("custom-link")});
