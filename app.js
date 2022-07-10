@@ -1,91 +1,58 @@
-// document.body.style.background = "";
-// const div = document.querySelector('div');
-// const titles = document.querySelectorAll('h1');
-// const h1 = document.getElementsByTagName('h1');
-// console.log(div);
-// console.dir(h1);
-// console.log(titles);
-// console.log(Array.from(titles));
-// console.log(Array.prototype.slice.call(titles));
-// console.log([...titles]);
+const div = document.querySelector("div");
+const links = document.links;
+const mark = div.querySelector("mark");
+const parentMark = mark.closest("article");
 
+// 1. Найти параграф и получить его текстовое содержимое (только текст!)
 
-// Зная структуру html, с помощью изученных
-// методов получить (в консоль):
-// 1. head
-// 2. body
-// 3. все дочерние элементы body и вывести их в
-// консоль.
-// 4. первый div и все его дочерние узлы
-// а) вывести все дочерние узлы в консоль
-// б) вывести в консоль все дочерние узлы,
-// кроме первого и последнего
-// Для навигации по DOM использовать методы,
-// которые возвращают только элементы
+const paragraph = document.querySelector("p");
+console.log(paragraph.textContent);
 
-// 1
-const headElement = document.head;
-console.dir(headElement);
-
-// 2
-const bodyElement = document.body;
-console.dir(bodyElement);
-
-// 3
-const childrenBody = document.body.children;
-console.dir(childrenBody);
-
-// 4
-const firstDiv = document.querySelector("div");
-const allElementFirstOfDiv = firstDiv.children;
-
-console.dir([...allElementFirstOfDiv]);
-console.dir([...allElementFirstOfDiv].slice(1,3));
-
-
-// 1. Создать функцию, которая принимает два элемента. 
-// Функция проверяет, является ли первый элемент родителем для второго:
-
-// isParent(parent, child);
-// isParent(document.body.children[0], document.querySelector('mark'));
-// true так как первый див является родительским элементом для mark
-
-// isParent(document.querySelector('ul'), document.querySelector('mark'));
-// false так ul НЕ является родительским элементом для mark
-// Функция принимает только DOM объекты.
- 
-function isParent(parent, child) {
-    let curentParent = child.parentElement;
-    let isParent = false;
-
-    while(curentParent) {
-        isParent = curentParent === parent;
-
-        if(isParent) {
-            curentParent = null;
-        } else {
-            curentParent = curentParent.parentElement;
-        }
-    }
-
-    return isParent;
-}
-
-console.log(isParent(document.body.children[0], document.querySelector('mark')));
-console.log(isParent(document.querySelector('ul'), document.querySelector('mark')));
-
-
-// 2. Получить список всех ссылок, которые не находятся внутри списка ul
-
-const allLinks = Array.from(document.links);
-const linksNotUl = allLinks.filter( a => !a.closest("ul"));
-
-console.log(linksNotUl);
-
-// 3. Найти элемент, который находится перед и после списка ul
+// 2. Создать функцию, которая принимает в качестве аргумента узел DOM и возвращает информацию (в виде объекта) о типе узла, об имени узла и о количестве дочерних узлов (если детей нет - 0).
 
 const ul = document.querySelector("ul");
-const beforUl = ul.previousElementSibling;
-const afterUl = ul.nextElementSibling;
 
-console.log(beforUl, afterUl);
+function infoNode(node) {
+     
+    let type = ""; 
+    switch(node.nodeType) {
+        case 1: type = "element node";
+            break;
+        case 3: type = "text node";
+            break;
+        case 8: type = "comment node";
+            break;
+    }
+
+    const name = node.nodeName;
+
+    let children = node.children.length;
+
+    return {type, name, children};
+};
+
+console.log(infoNode(ul));
+
+// 3. Получить массив, который состоит из текстового содержимого ссылок внутри списка: 
+// getTextFromUl(ul) ---> ["Link1", "Link2", "Link3"]
+
+function getTextFromUl(node) {
+    let text = [];
+    let nodeText = node.textContent.trim().split("\n");
+    nodeText.forEach( element => { text.push(element.trim());
+    });
+    return text;
+};
+
+console.log(getTextFromUl(ul));
+
+// 4. В параграфе заменить все дочерние текстовые узлы на “-text-” (вложенные теги должны остаться).
+// Конечный результат: -text-<a href="#">reprehendunt</a>-text-<mark>nemore</mark>-text-
+
+let childrenParagraph = paragraph.childNodes;
+childrenParagraph.forEach(element => { 
+    if(element.nodeType === 3) 
+        element.textContent = "-text-";
+});
+
+console.log(paragraph);
