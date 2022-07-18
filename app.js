@@ -1,65 +1,35 @@
-// 1. Не используя innerHTML, добавить в список несколько li с классом ‘new-item’ и текстом ‘item’ + номер li:
-// <ul>
-// <li><a href="#">Link1</a></li>
-// ...
-// <li class=”new-item”>item 5</li>
-// <li class=”new-item”>item 6</li>
-// </ul>
-// Вручную номер li не ставить оно должно подставляться в зависимости от кол-ва лишек в списке.
+// 1.По нажатию на кнопку "btn-msg" должен появиться алерт с тем текстом,
+//  который находится в атрибуте data-text у кнопки.
+const btn = document.getElementById("btn-msg");
 
-const ul = document.querySelector("ul");
-const countLi = ul.children.length;
-const countNewLi = 3;
+// btn.addEventListener('click', function(e) {
+//     alert(btn.dataset.text);
+// });
 
-for(let i = countLi; i < countLi + countNewLi; i++) {
-    const li = document.createElement("li");
-    li.className = "new-item";
-    li.textContent = `item ${i+1}`;
-    ul.append(li);
-}
+// 2. При наведении указателя мыши на "btn-msg", кнопка становится красной; 
+// когда указатель мыши покидает кнопку, она становится прежнего цвета. 
+// Цвет менять можно через добавление класса.
 
-// 2. В каждую ссылку, которая находятся внутри списка ul  добавить по тегу strong (в каждую ссылку один - strong).
+// btn.addEventListener('mouseover', e => {
+//     btn.setAttribute("class", "red");
+// });
+// btn.addEventListener('mouseout', e => {
+//     btn.removeAttribute("class");
+// });
 
-const allLinks = document.links;
+// 3. При нажатии на любой узел документа показать в элементе с id=tag имя тега нажатого элемента.
 
-for(let i = 0; i < allLinks.length; i++){
-
-    let parent = allLinks[i].parentElement;
-    while(parent){
-
-        if(parent.tagName === "UL"){
-            const strong = document.createElement("strong");
-            strong.textContent = allLinks[i].textContent;
-            allLinks[i].firstChild.replaceWith(strong);
-            break;
-        }
-        parent = parent.parentElement;
-    }
-}
-
-
-// 3. В начало документа (в начало body) добавить картинку img с атрибутами src и alt (текст придумайте сами). 
-// В src добавьте реальный url к картинке. Для создания элемента используйте метод createElement. 
-
-const img = document.createElement("img");
-img.setAttribute("src", "colibri.jpg");
-img.setAttribute("alt", "Image doesn't loaded");
-document.body.prepend(img);
-
-// 4. Найти на странице элемент mark, добавить в конец содержимого текст “green” и на элемент установить класс green
-
-const mark = document.querySelector("mark");
-mark.append(" green");
-mark.classList.add("green");
-
-// 5. Отсортировать li внутри списка в обратном порядке (по тексту внутри)
-
-const list = document.querySelector("ul");
-
-const sortedItems = [...list.children].sort((prev, next) => {
-    return prev.textContent > next.textContent ? -1 : -1 ;
+const tag = document.getElementById('tag ');
+document.addEventListener('click', e => {
+    tag.textContent = `Tag: ${e.target.nodeName}`;
 });
 
-list.innerHTML = "";
+// 4. При нажатии на кнопку btn-generate добавлять в список ul элемент списка Li с текстом Item + порядковый номер Li по списку, т.е Item 3, Item 4 и т.д 
 
-sortedItems.forEach(element => list.append(element));
+const btnGenerate = document.getElementById("btn-generate");
+const ul = document.querySelector("ul");
+btnGenerate.addEventListener('click', e => {
+    const newLi = document.createElement("li");
+    newLi.textContent = `Item ${ul.children.length + 1}`;
+    ul.append(newLi);
+});
