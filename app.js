@@ -8,6 +8,7 @@
 // Вопросы: правильно ли решать через "навешивание" обработчика события на общего предка(<ul class="menu">)?
 // Обязательно ли использовать перебор всех <li class="dropdown-item">, как препод. примере?
 // Почему у меня работает через target, а в препод. примере через currentTarget?
+
 // const menu = document.querySelector(".menu");
 // let openedMenu = null;
 // let dropdownMenu = null;
