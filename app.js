@@ -1,155 +1,42 @@
-// 1. Создать объект, который описывает ширину и высоту
-// прямоугольника, а также может посчитать площадь фигуры:
-// const rectangle = {width:..., height:..., getSquare:...};
+// 1. При наведении на любой из блоков с классом .box все его дочерние элементы должны поменять свой фон на один из списка. ВАЖНО, только дочерние относительно блока на который навели мышь.
 
-let rectangle = {
-    width: 2, 
-    height: 4,
-    getSquare: function() {
-        return this.width * this.height
-    }
+// Вот массив (список) рандомных цветов:
+// ['red', 'blue', 'olive', 'orange', 'pink', 'yellow', 'green', 'gray', 'aqua', 'brown'];
+
+// 2. Возращаете фон обратно когда пользователь уводит мышку с блока.
+
+// 3. Добавление фона из первой части задания сделать с задержкой в 200мс. Т.е каждый последующий блок должен изменить свой фон за 200мс позже предыдущего. Например если первый блок поменял через 200мс то следующий должен поменять через 400 и т.д.
+
+const colors = ['red', 'blue', 'olive', 'orange', 'pink', 'yellow', 'green', 'gray', 'aqua', 'brown'];
+const boxes = document.querySelectorAll(".box");
+const defaultColor = "#fff";
+
+//Случайный выбор фона и назначение его элементу
+function choiceRandomColor(e) {
+  const colorIndex = Math.floor( Math.random() * colors.length );
+  e.style.background = colors[colorIndex];
+}
+//Установка фона в прежнее состояние
+function changeDefaultColor(e) {
+  const currentBox = e.target;
+  currentBox.style.background = defaultColor;
 }
 
-console.log(rectangle.getSquare());
 
-/*2. Создать объект, у которого будет цена товара и его скидка, а также
-    два метода: для получения цены и для расчета цены с учетом скидки:
-    const price = {
-    price: 10,
-    discount: '15%',
-    ... };
+function changeColor(e) {
 
-    price.getPrice(); // 10
-    price.getPriceWithDiscount(); // 8.5
-*/
-
-const price = {
-    price: 10,
-    discount: '15%',
-    getPrice: function() {return this.price;},
-    getPriceWithDiscount: function() {
-        discountInt = parseInt(this.discount);
-        return this.price - (this.price * discountInt / 100);
-    },
-};
-
-console.log(price.getPrice());
-console.log(price.getPriceWithDiscount());
-
-/*3. Создать объект, у которого будет поле высота и метод “увеличить
-    высоту на один”. Метод должен возвращать новую высоту:
-    object.height = 10;
-    object.inc(); // придумать свое название для метода
-    object.height; // 11;
-*/
-
-const obj = {
-    height: 3,
-    getHeightPlusOne: function() {
-        return ++this.height ;
-    }
+  const currentBox = e.target;
+  //создаем массив и добавляем в него элементы потомков, в которых нужно изменить цвета
+  let elements = [currentBox];
+  let nextChild = currentBox.firstElementChild;
+  //Проверяем есть ли потомки у элемента и добавляем каждый в конец массива
+  while(nextChild) {
+    elements.push(nextChild);
+    nextChild = nextChild.firstElementChild;
+  } 
+  //Проходим по масиву потомков и изменяем цвет через заданный интервал времени
+  elements.forEach((el, index) => setTimeout(choiceRandomColor, 200 * (index + 1), el));
 }
 
-console.log(obj.height);
-console.log(obj.getHeightPlusOne());
-console.log(obj.height);
-
-/* 4. Создать объект “вычислитель”, у которого есть числовое свойство
-    “значение” и методы “удвоить”, “прибавить один”, “отнять один”.
-    Методы можно вызывать через точку, образуя цепочку методов:
-    const numerator = {
-        value: 1,
-        double: function () {...},
-        plusOne: function () {...},
-        minusOne: function () {...},
-    }
-    numerator.double().plusOne().plusOne().minusOne();
-    numerator.value // 3
-*/
-
-const numerator = {
-    value: 3,
-    double: function () { 
-        this.value *= this.value; 
-        return this; 
-    },
-    plusOne: function () { 
-        this.value = ++this.value ; 
-        return this; 
-    },
-    minusOne: function () { 
-        this.value = --this.value; 
-        return this; 
-    },
-}
-
-numerator.double().plusOne().plusOne().minusOne();
-numerator.double().plusOne().minusOne();
-console.log(numerator.value);
-
-
-// 5. Создать объект с розничной ценой и количеством продуктов.
-// Этот объект должен содержать метод для получения общей стоимости
-// всех товаров (цена * количество продуктов)
-
-const product = {
-    price: 17,
-    quantity : 5,
-    getPriceQuantities: function () {
-        return this.price * this.quantity;
-        
-    }
-};
-// console.log(product.getPriceQuantities());
-
-// 6. Создать объект из предыдущей задачи. 
-// Создать второй объект, который описывает количество деталей и цену за одну деталь. 
-// Для второго объекта нужно узнать общую стоимость всех деталей, но нельзя создавать новые функции и методы.
-// Для этого “позаимствуйте” метод из предыдущего объекта.
-
-product.getPriceQuantities();
-
-const detail = {
-    price: 6,
-    quantity: 45,
-};
-
-console.log(product.getPriceQuantities.call(detail));
-
-// console.log(product.getPriceQuantities.call(detail));
-
-// 7. Даны объект и функция:
-// let sizes = {width: 5, height: 10},
-// getSquare = function () {return this.width * this.height};
-// Не изменяя функцию или объект, получить результат функции
-// getSquare для объекта sizes
-
-
-let sizes = {
-    width: 5, 
-    height: 10
-};
-getSquare = function () {return this.width * this.height};
-
-console.log(getSquare.call(sizes));
-
-// console.log(getSquare.call(sizes, sizes.width, sizes.width));
-
-// 8. let element = {
-//     height: 25,
-//     getHeight: function () {return this.height;}
-// };
-
-// let getElementHeight = element.getHeight;
-// getElementHeight(); // undefined
-
-// Измените функцию getElementHeight таким образом, чтобы можно
-// было вызвать getElementHeight() и получить 25.
-
-let element = {
-        height: 25,
-        getHeight: function () {return this.height;}
-};
-
-let getElementHeight = element.getHeight.bind(element);
-console.log(getElementHeight());
+boxes.forEach( elem => elem.addEventListener('mouseenter', changeColor));
+boxes.forEach( elem => elem.addEventListener('mouseleave', changeDefaultColor));
