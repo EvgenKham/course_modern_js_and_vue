@@ -58,9 +58,7 @@ const tasks = [
   listContainer.addEventListener("click", onDeleteHandler);
   listContainer.addEventListener("click", onCompleteHanler);
   const showTaskContainer = document.querySelector(".data-set-show-tasks");
-  showTaskContainer.addEventListener("click", onShowAllTasks);
-  showTaskContainer.addEventListener("click", onShowNoCompletedTasks);
-
+  showTaskContainer.addEventListener("click", onShowOrHideTasks);
 
   //Отрисовка задач по умолчанию
   function renderAllTasks (tasksList) {
@@ -70,9 +68,15 @@ const tasks = [
       console.error("Please, enter the list of tasks!");
       return;
     }
+    //Перед оотображением задачи сортируем по выполненности
+    console.log(tasksList);
+    const t = sortTaskOnCompleted(tasksList);
+    // console.log(tasksList);
+    console.log(t);
 
     const fragment = document.createDocumentFragment();
     Object.values(tasksList).forEach( task => {
+      // console.log(task);
       const li = listItemTemplate(task);
       fragment.appendChild(li);
     })
@@ -95,12 +99,7 @@ const tasks = [
     //Выполненые задачи при певоначальной загрузке страницы отображаются светло-зеленым цветом
     if(completed){
       li.style.background = "lightgreen";
-    }
-    //По умолчанию все задачи отобразаются
-    li.style.visibility = "visible";
-    
-    //Какого хуя visibility работает, а display - ни хуя!!!!!!!!!!!!!!!!!
-    // li.style.display = "";
+    };
 
     const span = document.createElement("span");
     span.textContent = title;
@@ -139,7 +138,7 @@ const tasks = [
     const bodyValue = inputBody.value;
 
     if(!titleValue || !bodyValue) {
-      alert("Please, enter title and body");
+      alert("Please, enter title and/or body of new task");
       return;
     }
 
@@ -222,45 +221,54 @@ const tasks = [
 
     return div;
   }
-
-  function hideCompletedTask (idTask) {
+  //Поиск отображаемых задач и их визуализация либо скрытие, в зависимости от вызываемой функции-обратотчика
+  function hideOrShowTask (idTask, show) {
     [...listContainer.children].forEach( li => {
       if(li.dataset.taskId === idTask){
-        li.style.visibility = "hidden";
-        //Какого хуя visibility работает, а display - ни хуя!!!!!!!!!!!!!!!!!
-        // li.style.display = "none";
+        if(show) {
+          //Какого хуя visibility работает, а display - ни хуя!!!!!!!!!!!!!!!!!
+          // li.style.display = "none!important";  
+          li.style.visibility = "visible";
+        } else {
+          // li.style.display = "block!important";
+          li.style.visibility = "hidden";
+        }
       } 
     });
   }
-
-  function showTask (idTask) {
-    [...listContainer.children].forEach( li => {
-      if(li.dataset.taskId === idTask){
-        li.style.visibility = "visible";
-        //Какого хуя visibility работает, а display - ни хуя!!!!!!!!!!!!!!!
-        // li.style.display = "";
-      } 
-    });
+  //Поиск выполненых задач по id
+  function findCompledeTask (showTask) {
+    Object.values(objOfTasks).forEach(task => {
+      if(task.completed === true) 
+        hideOrShowTask(task._id, showTask);         
+    }); 
   }
-
-  function onShowAllTasks ({target}) {
+  //Функция-обработчик события для визуализации всех или только выполненых задач
+  function onShowOrHideTasks ({target}) {
     const btnAll = target.classList.contains("data-set-all-tasks");
-    if(btnAll){
-      Object.values(objOfTasks).forEach(task => {
-          showTask(task._id);
-      }); 
-    }
-  }
-
-  function onShowNoCompletedTasks ({target}) {
     const btnCompleted = target.classList.contains("data-set-no-completed-tasks");
-    if(btnCompleted){
-      Object.values(objOfTasks).forEach(task => {
-        if(task.completed === true) {
-          hideCompletedTask(task._id);         
-        }   
-      }); 
-    }
+    if(btnAll)
+      findCompledeTask(true);
+    if(btnCompleted)
+      findCompledeTask(false);
+  }
+  // Функция для сортировки задач (В начале не выполненые, затем выполненные)
+  function sortTaskOnCompleted(tasks) {
+    const noSorted = Object.values(tasks);
+    console.log(noSorted);
+    noSorted.sort( (task1, task2) => {
+      // console.log(task1, task2);
+      if(task1.completed > task2.completed) {   
+        console.log("More");
+        return -1;  }    
+      if(task1.completed < task2.completed) {   
+        console.log("Less");
+        return 1;   }
+      if(task1.completed == task2.completed) {  
+        console.log("Equal");
+        return 0;   }
+    });
+    return tasks;
   }
 
 })(tasks);
