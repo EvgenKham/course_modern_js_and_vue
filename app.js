@@ -56,7 +56,8 @@ const tasks = [
   renderAllTasks(objOfTasks);
   form.addEventListener("submit", onFormSubmitHandler);
   listContainer.addEventListener("click", onDeleteHandler);
-  listContainer.addEventListener("click", onCompleteHanler);
+  listContainer.addEventListener("click", onCompleteHandler);
+  listContainer.addEventListener("click", onRecoverHandler);
   const showTaskContainer = document.querySelector(".data-set-show-tasks");
   showTaskContainer.addEventListener("click", onShowOrHideTasks);
 
@@ -68,22 +69,26 @@ const tasks = [
       console.error("Please, enter the list of tasks!");
       return;
     }
-    //Перед оотображением задачи сортируем по выполненности
-    console.log(tasksList);
-    const t = sortTaskOnCompleted(tasksList);
-    // console.log(tasksList);
-    console.log(t);
+    //Перед отображением задачи сортируем по выполненности
+    tasksList = sortTaskOnCompleted(Object.values(tasksList));
+    const fragment = createListFragment(tasksList);
 
-    const fragment = document.createDocumentFragment();
-    Object.values(tasksList).forEach( task => {
-      // console.log(task);
-      const li = listItemTemplate(task);
-      fragment.appendChild(li);
-    })
+    //Добавляем класс для того, чтобы разлизать в каком разделе находятся задачи(All or Completed). 
+    //При первичном рендеринге по умолчанию отрисовываются все задачи
+    listContainer.classList.add("all-tasks");
     //Добавляем перед всеми задачами 2 кнопки: "Все" и "Выполненные" задачи
     listContainer.before(buttonGroupTemplate());
     //Затем добавляем все задачи
     listContainer.appendChild(fragment);
+  }
+  //Создание фрагмента со списком задач
+  function createListFragment(tasks) {
+    const fragment = document.createDocumentFragment();
+    tasks.forEach( task => {
+      const li = listItemTemplate(task);
+      fragment.appendChild(li);
+    })
+    return fragment;
   }
   //Отрисовка одной задачи в списке
   function listItemTemplate({_id, title, body, completed} = {}) {
@@ -96,30 +101,44 @@ const tasks = [
         "mt-2"
       );
     li.setAttribute('data-task-id', _id);
-    //Выполненые задачи при певоначальной загрузке страницы отображаются светло-зеленым цветом
-    if(completed){
-      li.style.background = "lightgreen";
-    };
 
     const span = document.createElement("span");
     span.textContent = title;
     span.style.fontWeight = "bold";
 
+    //Контейнер для кнопок "Complete", "Delete", "Recover"
+    const divGroupBtn = document.createElement("div");
+    divGroupBtn.classList.add("btn-group", "ml-auto","mb-2");
+
     const deleteBtn = document.createElement("button");
-    deleteBtn.textContent = "Detete task";
-    deleteBtn.classList.add("btn", "btn-danger", "ml-auto","mb-2" , "delete-btn");
+    deleteBtn.textContent = "Delete task";
+    deleteBtn.classList.add("btn", "btn-danger", "mb-2", "delete-btn");
 
     const completeBtn = document.createElement("button");
     completeBtn.textContent = "Complete task";
-    completeBtn.classList.add("btn", "btn-primary", "ml-auto", "mb-2", "complete-btn");
+    completeBtn.classList.add("btn", "btn-primary", "mb-2", "complete-btn");
+
+    const recoverBtn = document.createElement("button");
+    recoverBtn.textContent = "Recover task";
+    recoverBtn.classList.add("btn", "btn-success", "mb-2", "recover-btn");
+    
+    //Выполненые задачи по умолчанию отображаются светло-зеленым цветом и их возможно восстановить
+    if(completed){
+      li.style.background = "lightgreen";
+    } else {
+      recoverBtn.style.visibility = "hidden";
+    }
+
+    divGroupBtn.appendChild(completeBtn);
+    divGroupBtn.appendChild(deleteBtn);
+    divGroupBtn.appendChild(recoverBtn);
 
     const article = document.createElement("p");
     article.textContent = body;
     article.classList.add("mt-2", "w-100");
 
     li.appendChild(span);
-    li.appendChild(deleteBtn);
-    li.appendChild(completeBtn);
+    li.appendChild(divGroupBtn);
     li.appendChild(article);
 
     return li;
@@ -194,19 +213,35 @@ const tasks = [
       listContainer.append(article);
     }
   }
-  //Функция-обработчик события для пометки выполненных задач светло-зеленым цветом
-  function onCompleteHanler({target}){
+  //Помечаем выполненные задачи светло-зеленым цветом и сортируем их по выполненности
+  function onCompleteHandler({target}){
     if(target.classList.contains("complete-btn")) {
       const parent = target.closest("[data-task-id]");
       parent.style.background = "lightgreen";
+      //Задача исчезает, если находимся в разделе "No copmleted tasks"
+      if(!checkSection()) {
+        parent.style.visibility = "hidden";
+      } 
       const id = parent.dataset.taskId;
-      objOfTasks[id].completed = true ;
+      //Cвойство задачи "completed", на котором произошло событие, изменяем на true
+      objOfTasks[id].completed = true;
+      sortAndVisible(objOfTasks);
+    }
+  }
+  //Востанавливаем задачу в разделе "All Tasks"
+  function onRecoverHandler({target}) {
+    if(target.classList.contains("recover-btn")){
+      const parent = target.closest("[data-task-id]");
+      const id = parent.dataset.taskId;
+      parent.style.background = "white";
+      objOfTasks[id].completed = false;
+      sortAndVisible(objOfTasks);
     }
   }
   //Отрисовка группы кнопок для всех и выполненых задач
   function buttonGroupTemplate () {
-    const div = document.createElement("div");
-    div.classList.add("btn-group", "data-set-show-tasks");
+    const divButtons = document.createElement("div");
+    divButtons.classList.add("btn-group", "data-set-show-tasks");
 
     const buttonAllTasks = document.createElement("button");
     buttonAllTasks.classList.add("btn", "btn-outline-info", "data-set-all-tasks");
@@ -214,61 +249,92 @@ const tasks = [
 
     const buttonCompletedTasks = document.createElement("button");
     buttonCompletedTasks.classList.add("btn", "btn-outline-info", "data-set-no-completed-tasks");
-    buttonCompletedTasks.textContent = "No Completed";
+    buttonCompletedTasks.textContent = "No Completed Tasks";
 
-    div.appendChild(buttonAllTasks);
-    div.appendChild(buttonCompletedTasks);
+    divButtons.appendChild(buttonAllTasks);
+    divButtons.appendChild(buttonCompletedTasks);
 
-    return div;
+    return divButtons;
   }
   //Поиск отображаемых задач и их визуализация либо скрытие, в зависимости от вызываемой функции-обратотчика
   function hideOrShowTask (idTask, show) {
     [...listContainer.children].forEach( li => {
       if(li.dataset.taskId === idTask){
-        if(show) {
-          //Какого хуя visibility работает, а display - ни хуя!!!!!!!!!!!!!!!!!
-          // li.style.display = "none!important";  
+        if(show) { 
           li.style.visibility = "visible";
         } else {
-          // li.style.display = "block!important";
           li.style.visibility = "hidden";
         }
       } 
     });
   }
   //Поиск выполненых задач по id
-  function findCompledeTask (showTask) {
+  function findCompledeTasks (isCompleted) {
+
     Object.values(objOfTasks).forEach(task => {
       if(task.completed === true) 
-        hideOrShowTask(task._id, showTask);         
+        hideOrShowTask(task._id, isCompleted);         
     }); 
   }
   //Функция-обработчик события для визуализации всех или только выполненых задач
   function onShowOrHideTasks ({target}) {
     const btnAll = target.classList.contains("data-set-all-tasks");
-    const btnCompleted = target.classList.contains("data-set-no-completed-tasks");
-    if(btnAll)
-      findCompledeTask(true);
-    if(btnCompleted)
-      findCompledeTask(false);
+    const btnNoCompleted = target.classList.contains("data-set-no-completed-tasks");
+    if(btnAll) {
+      if(!checkSection()){
+        listContainer.classList.add("all-tasks");
+      }
+      findCompledeTasks(true);
+    }
+    if(btnNoCompleted){
+      if(checkSection()){
+        listContainer.classList.remove("all-tasks");
+      }
+      findCompledeTasks(false);
+    }
   }
   // Функция для сортировки задач (В начале не выполненые, затем выполненные)
   function sortTaskOnCompleted(tasks) {
-    const noSorted = Object.values(tasks);
-    console.log(noSorted);
-    noSorted.sort( (task1, task2) => {
-      // console.log(task1, task2);
-      if(task1.completed > task2.completed) {   
-        console.log("More");
-        return -1;  }    
-      if(task1.completed < task2.completed) {   
-        console.log("Less");
-        return 1;   }
-      if(task1.completed == task2.completed) {  
-        console.log("Equal");
-        return 0;   }
+    tasks.sort( (task1, task2) => {
+      if(task1.completed > task2.completed) {   return 1;  }    
+      if(task1.completed < task2.completed) {   return -1;   }
+      if(task1.completed == task2.completed) {  return 0;   }
     });
     return tasks;
+  }
+  //Проверка в каком разделе находимся: если в "All Tasks" возвращает true, иначе - false
+  function checkSection () {
+    if(listContainer.classList.contains("all-tasks")) { 
+      return true; 
+    } else {  
+      return false; 
+    }
+  }
+  //Перерисовываем задачи по выполненности и разделяем на два раздела
+  function sortAndVisible(tasksList){
+    const tasks = sortTaskOnCompleted(Object.values(tasksList));
+    //Удаляем все дочерние элементы в контейнере
+    while (listContainer.firstChild) {
+      listContainer.removeChild(listContainer.firstChild);
+    }
+    //Наполняем контейнер отсортироваными задачами
+    const fragment = createListFragment(tasks);
+    listContainer.appendChild(fragment);
+    //Проверяем в каком разделе находимся("All Tasks"\"No Completed Tasks").
+    //Если в "No Completed Tasks", то после выполнения одной из них она исчезает и появляется в "All Tasks"
+    if(checkSection()) {
+        return;
+    } else {
+      Object.values(tasks).forEach(task => {
+        if(task.completed === true) {
+          [...listContainer.children].forEach( li => {
+            if(li.dataset.taskId === task._id){
+              li.style.visibility = "hidden";
+            }
+          });
+        }
+      })
+    }
   }
 
 })(tasks);
