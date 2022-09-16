@@ -1,14 +1,23 @@
+// Получить пользователей (users) от сервера https://jsonplaceholder.typicode.com. 
+// Получив ответ от сервера вывести имена пользователей на страницу. 
+// При клике на имя пользователя в произвольном месте должна появиться подробная информация о нем. 
+// Для визуальной части можно использовать bootstrap или другие фреймворки. 
+
 const btn = document.querySelector("button");
 const container = document.querySelector(".container");
 
 btn.addEventListener("click", renderAboutUser);
 container.addEventListener("click", displayAboutUser);
 
-function getPosts(cb) {
+function getUsers(cb) {
     const xhr = new XMLHttpRequest();
     xhr.open("GET", "https://jsonplaceholder.typicode.com/users");
 
     xhr.onload = function() {
+        if(xhr.status !== 200) {
+            console.log("Error", xhr.status);
+            return;
+        }
         const response = JSON.parse(xhr.responseText);
         cb(response);
     }
@@ -21,7 +30,7 @@ function getPosts(cb) {
 }
 
 function renderAboutUser() {
-    getPosts((response) => {
+    getUsers((response) => {
         const fragment = document.createDocumentFragment();
         response.forEach(user => {
             const person = document.createElement("div");
@@ -29,6 +38,7 @@ function renderAboutUser() {
 
             const name = document.createElement("p");
             name.classList.add("name");
+            
             name.textContent = `name: ${user.name}`;
 
             const aboutUser = document.createElement("div");
