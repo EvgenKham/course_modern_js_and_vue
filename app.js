@@ -50,18 +50,6 @@ function renderAboutUser() {
             const email = document.createElement("p");
             email.textContent = `email: ${user.email}`;
 
-            const address = document.createElement("i");
-            address.textContent = "address: ";
-
-            const street = document.createElement("pre");
-            street.textContent = `    street: ${user.address.street}`;
-
-            const suite = document.createElement("pre");
-            suite.textContent = `    suite: ${user.address.suite}`;
-
-            const city = document.createElement("pre");
-            city.textContent = `    city: ${user.address.city}`;
-
             const phone = document.createElement("p");
             phone.textContent = `phone: ${user.phone}`
 
@@ -70,10 +58,6 @@ function renderAboutUser() {
             
             aboutUser.appendChild(userName);
             aboutUser.appendChild(email);
-            aboutUser.appendChild(address);
-            aboutUser.appendChild(street);
-            aboutUser.appendChild(suite);
-            aboutUser.appendChild(city);
             aboutUser.appendChild(phone);
             aboutUser.appendChild(website);
             
