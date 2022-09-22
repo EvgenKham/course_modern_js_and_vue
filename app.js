@@ -1,3 +1,11 @@
+// 1. Добавить в форму селект для выбора категории
+// 2. Добавить обработку формы. 
+// При сабмите формы должен отправляться запрос на получение новостей по выбранной категории и стране, 
+// если в инпуте search есть какое-то значение, то нужно делать запрос на everething и передавать то,
+// что ввел пользователь.
+// 3. Добавить условие. Если у новости нет картинки то подставлять картинку заглушку. 
+// Картинку заглушку можете выбрать самостоятельно из интернета.
+
 // Custom Http Module
 function customHttp() {
   return {
@@ -61,8 +69,8 @@ const newsService = (function() {
   const apiUrl = "https://newsapi.org/v2";
 
   return {
-    topHeadlines(country = "ua", cb) {
-      http.get(`${apiUrl}/top-headlines?country=${country}&category=technology&apiKey=${apiKey}`, cb);
+    topHeadlines(country = "ua", category = 'general', cb) {
+      http.get(`${apiUrl}/top-headlines?country=${country}&category=${category}&apiKey=${apiKey}`, cb);
     },
     everything(query, cb) {
       http.get(`${apiUrl}/everything?q=${query}&apiKey=${apiKey}`, cb);
@@ -70,18 +78,18 @@ const newsService = (function() {
   };
 })();
 
-//Elements
+// Elements
 const form = document.forms['newsControls'];
 const countrySelect = form.elements['country'];
+const categorySelect = form.elements['category'];
 const searchInput = form.elements['search'];
 
 form.addEventListener('submit', (e) => {
   e.preventDefault();
   loadNews();
-
 })
 
-//  init selects
+// init selects
 document.addEventListener('DOMContentLoaded', function() {
   M.AutoInit();
   loadNews();
@@ -92,16 +100,17 @@ function loadNews() {
   showLoader();
 
   const country = countrySelect.value;
+  const category = categorySelect.value;
   const searchText = searchInput.value;
 
   if(!searchText) {
-    newsService.topHeadlines(country, onGetResponse);
+    newsService.topHeadlines(country, category, onGetResponse);
   } else {
     newsService.everything(searchText, onGetResponse);
   }
 }
 
-//Function on get response from server
+// Function on get response from server
 function onGetResponse(err, res) {
   removePreloader();
 
@@ -110,15 +119,16 @@ function onGetResponse(err, res) {
     return;
   }
 
-  if(!res.articles.length){
-    // Show empty message
-    return;
-  }
+  res.articles.forEach(article => {
+    if(article.urlToImage === null) {     
+      article.urlToImage = "/Plug-News.jpg";
+    }
+  });
 
   renderNews(res.articles);
 }
 
-//Function render news
+// Function render news
 function renderNews(news) {
   const newsContainer = document.querySelector(".news-container .row");
   if(newsContainer.children.length) {
@@ -143,7 +153,7 @@ function clearContainer(container) {
   }
 }
 
-//News item template function
+// News item template function
 function newsTemplate({urlToImage, title, url, description}) {
   return `
     <div class="col s12">
@@ -178,7 +188,7 @@ function showLoader() {
   );
 }
 
-//Remove loader function
+// Remove loader function
 function removePreloader(){
   const loader = document.querySelector(".progress");
   if(loader) {
