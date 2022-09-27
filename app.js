@@ -1,26 +1,11 @@
-// Создать функцию, которая возвращает промис.  
-// Функция принимает два аргумента - время, через которое промис должен выполниться, и значение, 
-// с которым промис будет выполнен. 
-function promiseCreator(ms, status) {
-  return new Promise(function(resolve, reject) {
-    setTimeout( ()=> {resolve(status)}, ms);
-  });
+// Переделали функцию getPost из ветки "fetch" с помощью async/await
+async function getPost(id) {
+
+  const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${id}`);
+  const data = await response.json();
+  return data;
 }
 
-const prom = promiseCreator(500, 'Ok!');
-prom.then(console.log);
-
-//Построение цепочек промисов
-const promise = new Promise((resolve, reject) => {
-  setTimeout( () => reject("Error"), 1000);
-})
-console.log(promise);
-promise
-.then( x => {
-  console.log(x);
-  return x;
-})
-.then( y => {
-  console.log(y);
-})
-.catch(err => console.log(err))
+getPost(1)
+  .then(data => console.log(data))
+  .catch(error => console.log(error));
