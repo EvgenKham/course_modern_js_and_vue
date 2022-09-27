@@ -1,4 +1,4 @@
-//Создать функцию, которая возвращает промис.  
+// Создать функцию, которая возвращает промис.  
 // Функция принимает два аргумента - время, через которое промис должен выполниться, и значение, 
 // с которым промис будет выполнен. 
 function promiseCreator(ms, status) {
@@ -10,7 +10,7 @@ function promiseCreator(ms, status) {
 const prom = promiseCreator(500, 'Ok!');
 prom.then(console.log);
 
-//Построение целочек промисов
+//Построение цепочек промисов
 const promise = new Promise((resolve, reject) => {
   setTimeout( () => reject("Error"), 1000);
 })
