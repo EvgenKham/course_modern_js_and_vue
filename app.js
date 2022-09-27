@@ -1,23 +1,22 @@
-function promiseCreator(ms, status) {
-  return new Promise(function(resolve, reject) {
-    setTimeout( ()=> {resolve(status)}, ms);
+//Сначала загружаем пост, потом загружаем коментарии поста и последнее - находим id автора поста
+
+// fetch("https://jsonplaceholder.typicode.com/posts")
+//   .then(response => {
+//     return response.json();
+//   })
+//   .then(posts => {
+//     console.log(posts);
+//   })
+//   .catch(error => console.log(error));
+
+
+function getPost(id) {
+  return new Promise( (resolve, reject) => {
+    fetch(`https://jsonplaceholder.typicode.com/posts/${id}`)
+      .then(response => response.json())
+      .then(post => resolve(post))
+      .catch(error => reject(error));
   });
 }
 
-const prom = promiseCreator(500, 'Ok!');
-prom.then(console.log);
-
-
-const promise = new Promise((resolve, reject) => {
-  setTimeout( () => reject("Error"), 1000);
-})
-console.log(promise);
-promise
-.then( x => {
-  console.log(x);
-  return x;
-})
-.then( y => {
-  console.log(y);
-})
-.catch(err => console.log(err))
+getPost(3).then(post => console.log(post));
