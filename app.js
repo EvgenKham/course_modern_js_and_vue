@@ -142,3 +142,45 @@ console.log(armchair.getInfo());
 // (validDate, например), содержащее дату (например, одну неделю от момента регистрации).
 // У классов-наследников метод “получить информацию” должен так же содержать информацию 
 // о дополнительных свойст(“суперАдмин” и “срокДействия”)
+
+function User (name, dataRegistration) {
+  this.name = name;
+  this.dataRegistration = dataRegistration;
+}
+
+User.prototype.getInfo = function () {
+  return `Имя: ${this.name}, Дата регистрации: ${this.dataRegistration}`;
+}
+
+Admin.prototype = Object.create(User.prototype);
+Admin.prototype.constructor = User;
+
+function Admin (name, dataRegistration, superAdmin = false) {
+  User.call(this, name, dataRegistration);
+  this._superAdmin = superAdmin;
+}
+
+Admin.prototype.getInfo = function () {
+  const user = User.prototype.getInfo.call(this);
+  return `${user}, админ: ${this._superAdmin}`;
+}
+
+Guest.prototype = Object.create(User.prototype);
+Guest.prototype.constructor = User;
+
+function Guest (name, dataRegistration, validDate) {
+  User.call(this, name, dataRegistration);
+  this.validDate = validDate;
+}
+
+Guest.prototype.getInfo = function () {
+  const user = User.prototype.getInfo.call(this);
+  return `${user}, срок действия: ${this.validDate}`;
+}
+
+const u = new User("Petr", new Date);
+console.log(u.getInfo());
+const a = new Admin("Vasiy", new Date("2022-09-11"), true);
+console.log(a.getInfo());
+const g = new Guest("Zoiy", new Date, new Date(2022, 10, 11));
+console.log(g.getInfo());
