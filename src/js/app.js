@@ -1,7 +1,7 @@
-import { conf as c } from './module1';
-// import * as mod1 from './module1';
-import Product from './module2';
+import locations from "./store/locations";
 
-console.log(new Product('Apple'));
-console.log(c);
-// console.log(mod1.foo());
+locations.init().then(res => {
+    console.log(res);
+    console.log(locations);
+    console.log(locations.getCitiesByCounctryCode("BY"));
+});
