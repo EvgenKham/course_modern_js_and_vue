@@ -14,6 +14,10 @@ class CurrencyUI {
     getCurrencySymbol() {
         return this.dictionary[this.currencyValue];
     }
+
+    getSymbolByCurrency(currencySymbol) {
+        return this.dictionary[currencySymbol];
+    }
 }
 
 const currencyUI = new CurrencyUI();

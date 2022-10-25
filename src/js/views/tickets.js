@@ -6,6 +6,10 @@ class TicketsUI {
         this.getCurrencySymbol = currency.getCurrencySymbol.bind(currency);
     }
 
+    getСontainer() {
+        return this.container;
+    }
+
     renderTickets(tickets) {
         this.clearContainer();
 
@@ -16,13 +20,16 @@ class TicketsUI {
 
         let fragment = '';
         const currency = this.getCurrencySymbol();
+        let idTicket = 0;
 
         tickets.forEach(ticket => {
-            const template = TicketsUI.ticketTemplate(ticket, currency);
+            const template = TicketsUI.ticketTemplate(ticket, currency, idTicket);
             fragment += template;
+            idTicket++;
         });
 
         this.container.insertAdjacentHTML('afterbegin', fragment);
+
     }
 
     clearContainer() {
@@ -42,7 +49,7 @@ class TicketsUI {
         `;
     }
 
-    static ticketTemplate(ticket, currency) {
+    static ticketTemplate(ticket, currency, id) {
         return `
         <div class="col s12 m6">
             <div class="card ticket-card">
@@ -73,6 +80,11 @@ class TicketsUI {
                     <span class="ticket-transfers">Пересадок: ${ticket.transfers}</span>
                     <span class="ticket-flight-number">Номер рейса: ${ticket.flight_number}</span>
                 </div>
+                <a
+                class="waves-effect waves-light btn-small green darken-1 add-favorite ml-auto"
+                data-objid="${id}"
+                >Add to favorites</a
+                >
             </div>
         </div>
         `;

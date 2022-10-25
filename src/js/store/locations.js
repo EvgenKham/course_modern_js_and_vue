@@ -18,26 +18,26 @@ class Locations {
             this.api.airlines(),
         ]);
         
-        const [countries, cities, airlines] = response;
+        const [countries, cities, airlines] = response;  
         this.countries = this.serializeCountries(countries);
         this.cities = this.serializeCities(cities);
         this.shortCities = this.createShortCities(this.cities);
         this.airlines = this.serializeAirlines(airlines);
-        
+
         return response;
     }
 
     getCityCodeByKey(key) {
         const city = Object.values(this.cities).find(
-            item => item.full_name === key,
+            city => city.full_name === key,
         );
         return city.code;
     } 
-
+    // *переделать getCityNameByCode
     getCityNameByCode(code) {
         return this.cities[code].name;
     }
-
+    
     getAirlineNameByCode(code){
         return this.airlines[code] ? this.airlines[code].name : '';
     }
@@ -45,10 +45,8 @@ class Locations {
     getAirlineLogoByCode(code){
         return this.airlines[code] ? this.airlines[code].logo : '';
     }
-
+    // *переделать createShortCities
     createShortCities(cities) {
-        // { 'City, County': null }
-        // Object.entries => [key, value]
         return Object.entries(cities).reduce( (acc, [, city]) => {
             acc[city.full_name] = null;
             return acc;
@@ -65,15 +63,13 @@ class Locations {
     }
 
     serializeCountries(countries) {
-        // { 'Countries code': {...} }
         return countries.reduce( (acc, country) => {
             acc[country.code] = country;
             return acc;
         }, {});
     }
-
+    // *переделать serialize
     serializeCities(cities) {
-        // { 'City name, County name': {...} }
         return cities.reduce((acc, city) => {
             const country_name = this.countries[city.country_code].name;
             city.name = city.name || city.name_translations.en;
@@ -88,14 +84,12 @@ class Locations {
     }
 
     getCountryNameByCode(code) {
-        // { 'Country code': {...} }
         return this.countries[code].name;
     }
 
     async fetchTickets(params) {
         const response = await this.api.prices(params);
         this.lastSearch = this.serializeTickets(response.data);
-    
     }
 
     serializeTickets(tickets){
@@ -116,4 +110,3 @@ class Locations {
 const locations = new Locations(api, { formatDate });
 
 export default locations;
-
