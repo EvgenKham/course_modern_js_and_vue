@@ -1,44 +1,34 @@
-import {getAutocompleteInstance, getDatePickerInstance} from '../plugins/materialize';
-
-class FormUI {
-    constructor(autocompleteInstance, datePickerInstance){
-        this._form = document.forms['locationControls'];
-        this.origin = document.getElementById('autocomplete-origin');
-        this.destination = document.getElementById('autocomplete-destination');
-        this.depart = document.getElementById('datepicker-depart');
-        this.return = document.getElementById('return-date');
-        this.originAutocomplete = autocompleteInstance(this.origin);
-        this.destinationAutocomplete = autocompleteInstance(this.destination);
-        this.departDatePicker = datePickerInstance(this.depart);
-        this.returnDatePicker = datePickerInstance(this.return);
-    }
-
-    get form() {
-        return this._form;
-    }
-
-    get originValue() {
-        return this.origin.value;
-    }
-
-    get destinationValue() {
-        return this.destination.value;
-    }
-
-    get departDateValue() {
-        return this.departDatePicker.toString();
-    }
-
-    get returnDateValue() {
-        return this.returnDatePicker.toString();
-    }
-
-    setAutocompleteData(data) {
-        this.originAutocomplete.updateData(data);
-        this.destinationAutocomplete.updateData(data);
-    }
-}
-
-const formUI = new FormUI(getAutocompleteInstance, getDatePickerInstance);
-
-export default formUI;
+/**
+ * Function inputErrorTemplate
+ * @param {String} msg
+ */
+ function inputErrorTemplate(msg) {
+    return `
+      <div class="invalid-feedback">${msg}</div>
+    `;
+  }
+  
+  /**
+   * Function showInputError. Add input error
+   * @param {HTMLInputElement} el
+   */
+  export function showInputError(el) {
+    const parent = el.parentElement;
+    const msg = el.dataset.invalidMessage || 'Invalid input';
+    const template = inputErrorTemplate(msg);
+    el.classList.add('is-invalid');
+    parent.insertAdjacentHTML('beforeend', template);
+  }
+  /**
+   * Function removeInputError. Remove input error
+   * @param {HTMLInputElement} el
+   */
+  export function removeInputError(el) {
+    const parent = el.parentElement;
+    const err = parent.querySelector('.invalid-feedback');
+    if (!err) return;
+  
+    el.classList.remove('is-invalid');
+    parent.removeChild(err);
+  }
+  
